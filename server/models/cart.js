@@ -14,7 +14,10 @@ module.exports = (sequelize, DataTypes) => {
     productQty: {
       type: DataTypes.INTEGER,
       validate: {
-        min: 1
+        min: {
+          args: 1,
+          msg: "Minimal quantity 1"
+        }
       }
     },
     checkOut: DataTypes.BOOLEAN,

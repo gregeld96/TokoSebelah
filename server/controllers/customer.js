@@ -92,7 +92,6 @@ class CartController {
                 } else if ((data.productQty + req.body.productQty) > currentProduct) {
                     throw ({status:400, msg:`Sorry your order exceed the stock`})
                 } else {
-                    // console.log(data.productQty)
                     let productQty = data.productQty
                     let updatedQty = {
                         productQty: (productQty + req.body.productQty)
