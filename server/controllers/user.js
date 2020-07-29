@@ -23,7 +23,7 @@ class UserController {
                 let result = comparePassword(password, user.password)
                 if(result){
                     let access_token = createToken({id: user.id, email: user.email})
-                    res.status(200).json({access_token, msg: `Successfully logged in!`} )
+                    res.status(200).json({access_token, name: user.name, msg: `Successfully logged in!`} )
                 } else throw ({status: 400, msg: `Email or Password Invalid`})
             })
             .catch(err => {

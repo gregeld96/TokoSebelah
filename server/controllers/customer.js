@@ -12,6 +12,16 @@ class CartController {
     }
 
     static readCategory (req, res, next) {
+        Category.findAll()
+            .then(data => {
+                res.status(200).json(data)
+            })
+            .catch(err => {
+                next(err)
+            })
+    }
+
+    static filterCategory (req, res, next) {
         Category.findOne({
                 where: {
                     name: req.params.name
@@ -39,7 +49,8 @@ class CartController {
 
         Cart.findAll({
                 where: {
-                    userId
+                    userId,
+                    checkOut: false
                 },
                 order: [
                     ["id", "ASC"]
@@ -72,9 +83,9 @@ class CartController {
 
         Product.findByPk(req.params.id)
             .then(data => {
-                console.log(data.stock)
-                console.log(req.body.productQty)
-                if(req.body.productQty > data.stock) throw ({status:400, msg:`Sorry please take the right amount`})
+                // console.log(data.stock)
+                // console.log(req.body.productQty)
+                if(req.body.productQty > data.stock || req.body.productQty < 1) throw ({status:400, msg:`Sorry please take the right amount`})
                 else {
                     currentProduct = data.stock;
                     return Cart.findOne({
@@ -99,6 +110,7 @@ class CartController {
                     // console.log(updatedQty)
                     return Cart.update(updatedQty, 
                         { where: {
+                            productId: req.params.id,
                             userId
                         }
                     })
@@ -130,36 +142,53 @@ class CartController {
 
     static update (req, res, next) {
         let userId = req.userData.id
-        let { id } = req.params //product id
+        let { productId } = req.body //product id
         let { productQty } = req.body
 
+        console.log(productId, productQty)
         Product
-            .findByPk(id)
+            .findByPk(productId)
             .then(data => {
+                console.log(data)
                 if(data.stock < productQty) throw ({status:400, msg:`Sorry your order exceed the stock`})
                 else {
                     return Cart.findOne({
                         where: {
-                            productId: id,
+                            productId,
                             userId
                         }
                     })
                 }
             })
             .then(data => {
+                console.log(data.dataValues, '=====')
                 if (data === null){
-                    throw ({status: 404, msg: "Data not found"})
+                    throw ({status: 404, msg: "Cart not found"})
                 } else {
                     let updatedQty = {
                         productQty: productQty
                     }
-                    return Cart.update(updatedQty, {where: {userId}})
+                    return Cart.update(updatedQty, {where: {productId,userId}})
                 }
+            })
+            .then(data => {
+                return Cart.findOne({
+                    where: {
+                        productId,
+                        userId
+                    },
+                    include: [
+                        {
+                         model: Product
+                        }
+                    ]
+                })
             })
             .then(data => {
                 res.status(200).json({data, msg: `Successfully edit` })
             })
             .catch(err => {
+                console.log(err)
                 next(err)
             })
     }

@@ -643,6 +643,38 @@
 
 * **URL**
 
+  > To get all the category <br />
+  `/customers/category`
+
+* **Method:**
+
+  `GET`
+
+* **Success Response:**
+
+  * **Code:** 200 OK <br />
+    **Content:** 
+    ```json
+   [
+        {
+          "id": [integer],
+          "name": [string],
+          "createdAt": [date],
+          "updatedAt": [date]
+        }
+    ]
+
+    ```
+ 
+* **Error Response:**
+
+    * **Code:** 500 INTERNAL SERVER ERROR<br />
+    **Content:** `{ msg }`
+
+<br />
+
+* **URL**
+
   > To get specific category <br />
   `/customers/category/:name`
 
@@ -945,7 +977,7 @@
 
    **Required:**
  
-   `id=[integer] (id of the product)` 
+   `id=[integer] (id of the cart)` 
   
 * **Data Params**
 
@@ -953,6 +985,7 @@
   
   ```json
   {
+    "productId": "integer",
     "productQty": "integer"
   }
   ```
@@ -963,9 +996,25 @@
     **Content:** 
     ```json
     {
-      "data": [
-        "Index Array on the cart"
-      ],
+      "data": {
+        "id": 12,
+        "productId": 6,
+        "productQty": 1,
+        "checkOut": false,
+        "userId": 3,
+        "createdAt": "2020-07-29T11:13:38.914Z",
+        "updatedAt": "2020-07-29T11:41:07.244Z",
+        "Product": {
+          "id": 6,
+          "name": "Asus Rog Zephyrus G14",
+          "image_url": "https://d2pa5gi5n2e1an.cloudfront.net/webp/global/images/product/laptops/ASUS_ROG_Zephyrus_G14/ASUS_ROG_Zephyrus_G14_L_1.jpg",
+          "price": 22000000,
+          "stock": 10,
+          "categoryId": 1,
+          "createdAt": "2020-07-28T10:17:40.945Z",
+          "updatedAt": "2020-07-28T10:17:40.945Z"
+        }
+      },
       "msg": "Successfully edit"
     }
     ```
@@ -979,6 +1028,7 @@
     ```
 
     OR
+    
 
     ```json
     {
@@ -986,6 +1036,16 @@
     }
     ```
     
+    OR
+
+    * **Code:** 403 Forbidden<br />
+    **Content:**
+    ```json
+      {
+        "msg": "You are not Authorized!"
+      }
+    ```
+
     OR
 
     * **Code:** 404 Not Found <br />

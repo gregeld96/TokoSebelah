@@ -4,7 +4,8 @@ const Authentication = require('../middlewares/customerAuthe')
 const Authorization = require('../middlewares/customerAutho')
 
 route.get('/product', controller.readProduct)
-route.get('/category/:name', controller.readCategory)
+route.get('/category', controller.readCategory)
+route.get('/category/:name', controller.filterCategory)
 route.use(Authentication)
 route.get('/', controller.readCart)
 route.post('/:id', controller.add) //Ada Authorization
